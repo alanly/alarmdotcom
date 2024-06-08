@@ -77,15 +77,19 @@ class AlarmControlPanel(HardwareBaseDevice, AlarmControlPanelEntity):  # type: i
 
         super().__init__(controller, device)
 
+        arm_code := controller.options.get(CONF_ARM_CODE)
+
         self._attr_code_format = (
             (
                 CodeFormat.NUMBER
                 if (isinstance(arm_code, str) and re.search("^\\d+$", arm_code))
                 else CodeFormat.TEXT
             )
-            if (arm_code := controller.options.get(CONF_ARM_CODE))
+            if arm_code
             else None
         )
+
+        self._attr_code_arm_required = arm_code is not None
 
         self._attr_supported_features = (
             AlarmControlPanelEntityFeature.ARM_HOME | AlarmControlPanelEntityFeature.ARM_AWAY
